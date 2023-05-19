@@ -32,6 +32,8 @@ $routes->set404Override();
 // $routes->get('/', 'Home::index');
 // service('auth')->routes($routes);
 
+$routes->get('test-server', '\App\Controllers\Home::index');
+
 $routes->post('auth/login', '\App\Controllers\Auth\LoginController::jwtLogin');
 $routes->post('auth/register', '\App\Controllers\Auth\RegisterController::jwtRegister');
 
