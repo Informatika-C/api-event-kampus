@@ -1,0 +1,943 @@
+openapi: '3.0.2'
+info:
+  title: API Event Kampus
+  version: '1.0'
+servers:
+  - url: http://localhost:8080
+    description: Development server
+paths:
+  /auth/login:
+    post:
+      tags:
+        - "Auth"
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginOutput'
+
+  /auth/register:
+    post:
+      tags:
+        - "Auth"
+      summary: Register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterOutput'
+
+  /events:
+    get:
+      tags:
+        - "Events"
+      summary: Mendapatkan daftar event kampus
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+    post:
+      tags:
+        - "Events"
+      summary: Membuat event baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+  /events/{eventId}:
+    parameters:
+      - name: eventId
+        in: path
+        required: true
+        description: ID event
+        schema:
+          type: string
+    put:
+      tags:
+        - "Events"
+      summary: Memperbarui detail event berdasarkan ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+    delete:
+      tags:
+        - "Events"
+      summary: Menghapus event berdasarkan ID
+      responses:
+        '204':
+          description: No Content
+    get:
+      tags:
+        - "Events"
+      summary: Mendapatkan detail event berdasarkan ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+  
+  /events/search:
+    get:
+      tags:
+        - "Events"
+      summary: Mencari event menggunakan query
+      parameters:
+        - name: title
+          in: query
+          description: Judul event
+          schema:
+            type: string
+        - name: date
+          in: query
+          description: Tanggal event
+          schema:
+            type: string
+            format: date
+        
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+
+  /events/{eventId}/panitia:
+    parameters:
+      - name: eventId
+        in: path
+        required: true
+        description: ID event
+        schema:
+          type: string
+    get:
+      tags:
+        - "Events"
+      summary: Mendapatkan daftar panitia event berdasarkan ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Panitia'
+
+  /events/{eventId}/peserta:
+    parameters:
+      - name: eventId
+        in: path
+        required: true
+        description: ID event
+        schema:
+          type: string
+    get:
+      tags:
+        - "Events"
+      summary: Mendapatkan daftar peserta event berdasarkan ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Peserta'
+  
+  /events/{eventId}/mitra:
+    parameters:
+      - name: eventId
+        in: path
+        required: true
+        description: ID event
+        schema:
+          type: string
+    get:
+      tags:
+        - "Events"
+      summary: Mendapatkan daftar mitra event berdasarkan ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Mitra'
+  
+  /events/{eventId}/sertifikat:
+    parameters:
+      - name: eventId
+        in: path
+        required: true
+        description: ID event
+        schema:
+          type: string
+    get:
+      tags:
+        - "Events"
+      summary: Mendapatkan daftar sertifikat event berdasarkan ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sertifikat'
+
+  /peserta:
+    get:
+      tags:
+        - "Peserta"
+      summary: Mendapatkan daftar id peserta
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  example: 0001, 0002, 0003
+
+  /peserta/{pesertaId}:
+    parameters:
+      - name: idPeserta
+        in: path
+        required: true
+        description: ID peserta
+        schema:
+          type: string
+    get:
+      tags:
+        - "Peserta"
+      summary: Mendapatkan detail peserta berdasarkan ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Peserta'
+    put:
+      tags:
+        - "Peserta"
+      summary: Memperbarui detail peserta berdasarkan ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PesertaInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Peserta'
+    delete:
+      tags:
+        - "Peserta"
+      summary: Menghapus peserta berdasarkan ID
+      responses:
+        '204':
+          description: No Content
+
+  /peserta/search:
+    get:
+      tags:
+        - "Peserta"
+      summary: Mencari peserta menggunakan query
+      parameters:
+        - name: name
+          in: query
+          description: Nama peserta
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: Email peserta
+          schema:
+            type: string
+        - name: phone
+          in: query
+          description: Nomor telepon peserta
+          schema:
+            type: string
+        - name: event
+          in: query
+          description: Event peserta
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Peserta'
+  
+  /peserta/{pesertaId}/event:
+    parameters:
+      - name: pesertaId
+        in: path
+        required: true
+        description: ID peserta
+        schema:
+          type: string
+    get:
+      tags:
+        - "Peserta"
+      summary: Mendapatkan daftar event peserta berdasarkan ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+
+  /peserta/{[pesertaId}/sertifikat:
+    parameters:
+      - name: PesertaId
+        in: path
+        required: true
+        description: ID peserta
+        schema:
+          type: string
+    get:
+      tags:
+        - "Peserta"
+      summary: Mendapatkan daftar sertifikat peserta berdasarkan ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sertifikat'
+  
+  /panitia:
+    get:
+      tags:
+        - "Panitia"
+      summary: Mendapatkan daftar id panitia
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  example: 0001, 0002, 0003
+  
+  /panitia/{panitiaId}:
+    parameters:
+      - name: idPanitia
+        in: path
+        required: true
+        description: ID panitia
+        schema:
+          type: string
+    get:
+      tags:
+        - "Panitia"
+      summary: Mendapatkan detail panitia berdasarkan ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Panitia'
+    put:
+      tags:
+        - "Panitia"
+      summary: Memperbarui detail panitia berdasarkan ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PanitiaInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Panitia'
+  
+  /panitia/search:
+    get:
+      tags:
+        - "Panitia"
+      summary: Mencari panitia menggunakan query
+      parameters:
+        - name: name
+          in: query
+          description: Nama panitia
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: Email panitia
+          schema:
+            type: string
+        - name: phone
+          in: query
+          description: Nomor telepon panitia
+          schema:
+            type: string
+        - name: event
+          in: query
+          description: Event panitia
+          schema:
+            type: string
+        - name: organizer
+          in: query
+          description: Organizer panitia
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+
+  /panitia/{panitiaId}/event:
+    parameters:
+      - name: panitiaId
+        in: path
+        required: true
+        description: ID panitia
+        schema:
+          type: string
+    get:
+      tags:
+        - "Panitia"
+      summary: Mendapatkan daftar event panitia berdasarkan ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+  
+  /sertifikat:
+    get:
+      tags:
+        - "Sertifikat"
+      summary: Mendapatkan daftar id sertifikat
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  example: 0001, 0002, 0003
+    post:
+      tags:
+        - "Sertifikat"
+      summary: Menambahkan sertifikat baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SertifikatInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sertifikat'
+  /sertifikat/{sertifikatId}:
+    parameters:
+      - name: idSertifikat
+        in: path
+        required: true
+        description: ID sertifikat
+        schema:
+          type: string
+    get:
+      tags:
+        - "Sertifikat"
+      summary: Mendapatkan detail sertifikat berdasarkan ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sertifikat'
+    delete:
+      tags:
+        - "Sertifikat"
+      summary: Menghapus sertifikat berdasarkan ID
+      responses:
+        '204':
+          description: No Content
+    put:
+      tags:
+        - "Sertifikat"
+      summary: Memperbarui detail sertifikat berdasarkan ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SertifikatInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sertifikat'
+  
+  /sertifikat/search:
+    get:
+      tags:
+        - "Sertifikat"
+      summary: Mencari sertifikat menggunakan query
+      parameters:
+        - name: event
+          in: query
+          description: Event sertifikat
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sertifikat'
+
+  /mitra:
+    get:
+      tags:
+        - "Mitra"
+      summary: Mendapatkan daftar id mitra
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  example: 0001, 0002, 0003
+    post:
+      tags:
+        - "Mitra"
+      summary: Menambahkan mitra baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MitraInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mitra'
+  /mitra/{mitraId}:
+    parameters:
+      - name: idMitra
+        in: path
+        required: true
+        description: ID mitra
+        schema:
+          type: string
+    get:
+      tags:
+        - "Mitra"
+      summary: Mendapatkan detail mitra berdasarkan ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mitra'
+    delete:
+      tags:
+        - "Mitra"
+      summary: Menghapus mitra berdasarkan ID
+      responses:
+        '204':
+          description: No Content
+    put:
+      tags:
+        - "Mitra"
+      summary: Memperbarui detail mitra berdasarkan ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MitraInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mitra' 
+
+  /mitra/search:
+    get:
+      tags:
+        - "Mitra"
+      summary: Mencari mitra menggunakan query
+      parameters:
+        - name: name
+          in: query
+          description: Nama mitra
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: Email mitra
+          schema:
+            type: string
+        - name: phone
+          in: query
+          description: Nomor telepon mitra
+          schema:
+            type: string
+        - name: event
+          in: query
+          description: Event mitra
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Mitra'                 
+
+  /user/daftarEvent/{eventId}:
+    parameters:
+      - name: idEvent
+        in: path
+        required: true
+        description: ID event
+        schema:
+          type: string
+
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - "User"
+      summary: Menambahkan peserta baru ke dalam event
+      responses:
+        '201':
+          description: Created
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - "User"
+      summary: Menghapus peserta dari event
+      responses:
+        '204':
+          description: No Content
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: abc123
+        title:
+          type: string
+          example: Seminar Teknologi
+        description:
+          type: string
+          example: Seminar tentang perkembangan teknologi terkini
+        date:
+          type: string
+          format: date
+          example: 2023-05-20
+        location:
+          type: string
+          example: Aula Utama
+        organizer:
+          type: string
+          example: Teknik Informatika Universitas XYZ
+        panitia:
+          type: array
+          items:
+            type: object
+            example: 
+              - id_panitia: abc123
+                status: Ketua
+
+    Panitia:
+      type: object
+      properties:
+        id_panitia:
+          type: string
+          format: uuid
+          example: abc123
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          example: admin@gmail.com
+    
+    Peserta:
+      type: object
+      properties:
+        id_peserta:
+          type: string
+          format: uuid
+          example: 0001
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          example: user@gmail.com
+        phone:
+          type: string
+          example: 081234567890
+
+    Mitra:
+      type: object
+      properties:
+        id_mitra:
+          type: string
+          format: uuid
+          example: abc123
+        name:
+          type: string
+          example: PT. ABC
+        address:
+          type: string
+          example: Jl. ABC No. 123
+        phone:
+          type: string
+          example: 081234567890
+
+    Sertifikat:
+      type: object
+      properties:
+        id_sertifikat:
+          type: string
+          format: uuid
+          example: abc123
+        id_peserta:
+          type: string
+          format: uuid
+          example: 0001
+        event:
+          type: string
+          format: uuid
+          example: abc123
+        date:
+          type: string
+          format: date
+          example: 2023-05-20
+        score:
+          type: integer
+          example: 100
+        status:
+          type: string
+          example: Lulus
+    
+    EventInput:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        date:
+          type: string
+          format: date
+        location:
+          type: string
+        organizer:
+          type: string
+        panitia:
+          type: array
+          items:
+            type: object
+            example: 
+              - id_panitia: abc123
+                status: Ketua
+
+    PesertaInput:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+
+    PanitiaInput:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+
+    SertifikatInput:
+      type: object
+      properties:
+        id_peserta:
+          type: string
+          format: uuid
+        event:
+          type: string
+          format: uuid
+        date:
+          type: string
+          format: date
+        score:
+          type: integer
+        status:
+          type: string
+
+    MitraInput:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+
+    LoginInput:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    LoginOutput:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: abc123
+
+    RegisterInput:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        confirmPassword:
+          type: string
+
+    RegisterOutput:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: abc123

@@ -127,7 +127,7 @@ class Auth extends ShieldAuth
     public array $authenticators = [
         'tokens'  => AccessTokens::class,
         'session' => Session::class,
-        // 'jwt'     => JWT::class,
+        'jwt'     => JWT::class,
     ];
 
     /**
@@ -172,9 +172,9 @@ class Auth extends ShieldAuth
      * @phpstan-var list<string>
      */
     public array $authenticationChain = [
+        'jwt',
         'session',
         'tokens',
-        // 'jwt',
     ];
 
     /**
