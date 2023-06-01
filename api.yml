@@ -3,8 +3,10 @@ info:
   title: API Event Kampus
   version: '1.0'
 servers:
-  - url: http://localhost:8080
+  - url: http://localhost:8080/
     description: Development server
+  - url: https://api-event-kampus.azurewebsites.net/
+    description: Production server
 paths:
   /test-server:
     get:
