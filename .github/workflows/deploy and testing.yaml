@@ -47,7 +47,7 @@ jobs:
           echo "database.tests.database = ${{ secrets.DB_TEST_NAME }}" >> .env
           echo "database.tests.username = ${{ secrets.DB_USER }}" >> .env
           echo "database.tests.password = ${{ secrets.DB_PASS }}" >> .env 
-          echo "authjwt.keys.default.0.secret = ${{ secrets.JWT_SECRET }}" >> .
+          echo "authjwt.keys.default.0.secret = ${{ secrets.JWT_SECRET }}" >> .env
 
       - name: Run Tests
         run: |
