@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy PHP app to Azure Web App - TeknoExpo
+name: Build and Testing
 
 on:
   push:
@@ -43,7 +43,15 @@ jobs:
           echo "database.default.database = ${{ secrets.DB_NAME }}" >> .env
           echo "database.default.username = ${{ secrets.DB_USER }}" >> .env
           echo "database.default.password = ${{ secrets.DB_PASS }}" >> .env
-          echo "authjwt.keys.default.0.secret = ${{ secrets.JWT_SECRET }}" >> .env
+          echo "database.tests.hostname = ${{ secrets.DB_HOST }}" >> .env
+          echo "database.tests.database = ${{ secrets.DB_TEST_NAME }}" >> .env
+          echo "database.tests.username = ${{ secrets.DB_USER }}" >> .env
+          echo "database.tests.password = ${{ secrets.DB_PASS }}" >> .env 
+          echo "authjwt.keys.default.0.secret = ${{ secrets.JWT_SECRET }}" >> .
+          
+      - name: Run Tests
+        run: |
+          composer test
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
