@@ -14,9 +14,9 @@ class AuthTest extends CIUnitTestCase
     use FeatureTestTrait;
 
     public function testLoginSuccsess(){
-        // $result = $this->call('post', '/auth/login', [
-        //     'email' => 'user@gmail.com',
-        //     'password' => 'orangbiasa'
-        // ]);
+        $result = $this->call('post', '/auth/login', [
+            'email' => 'user@gmail.com',
+            'password' => 'orangbiasa'
+        ]);
     }
 }
