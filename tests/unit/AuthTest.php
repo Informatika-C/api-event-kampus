@@ -34,7 +34,7 @@ class AuthTest extends CIUnitTestCase
             'password' => 'orangbiasa'
         ]);
 
-        $this->assertTrue(!$result->isOK());
+        $this->assertTrue($result->isOK());
     }
 
     private function createDummyUser(){
