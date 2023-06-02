@@ -48,7 +48,11 @@ jobs:
           echo "database.tests.username = ${{ secrets.DB_USER }}" >> .env
           echo "database.tests.password = ${{ secrets.DB_PASS }}" >> .env 
           echo "authjwt.keys.default.0.secret = ${{ secrets.JWT_SECRET }}" >> .
-          
+      
+      - name: Run Migration
+        run: |
+          php spark migrate
+
       - name: Run Tests
         run: |
           composer test
