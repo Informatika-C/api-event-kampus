@@ -42,7 +42,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginOutput'
-
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        example: "Email tidak terdaftar"
+                      password:
+                        type: string
+                        example: "Password salah"
+                 
+                
   /auth/register:
     post:
       tags:
@@ -61,6 +78,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RegisterOutput'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        example: "Email sudah terdaftar"
+                      password:
+                        type: string
+                        example: "Password terlalu pendek"
+                      username:
+                        type: string
+                        example: "Username sudah terdaftar"
+                      password_confirm:
+                        type: string
+                        example: "Password tidak sama"
 
   /events:
     get:
@@ -950,7 +989,7 @@ components:
           type: string
         password:
           type: string
-        confirmPassword:
+        password_confirm:
           type: string
 
     RegisterOutput:
