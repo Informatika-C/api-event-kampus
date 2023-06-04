@@ -17,19 +17,25 @@ class LoginController extends BaseController
      */
     public function jwtLogin()
     {
-        $email = $this->request->getVar('email');
-        $password = $this->request->getVar('password');
+        $email = $this->request->getPost('email');
+        $password = $this->request->getPost('password');
         // Get the validation rules
         $rules = $this->getValidationRules();
 
         // Validate credentials
-        if (! $this->validateData([
-            'email'    => $email,
-            'password' => $password,
-        ], $rules)) {
-
-            return $this->response->setJSON(['errors' => $this->validator->getErrors()])
-                ->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
+        try{
+            if (! $this->validateData([
+                'email'    => $email,
+                'password' => $password,
+            ], $rules)) {
+    
+                return $this->response->setJSON(['errors' => $this->validator->getErrors()])
+                    ->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
+            }
+        }
+        catch(\Exception $e){
+            return $this->response->setJSON(['errors' => "Something went wrong"])
+                    ->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
         }
 
         // Get the credentials for login
@@ -75,16 +81,25 @@ class LoginController extends BaseController
      */
     protected function getValidationRules(): array
     {
-        return setting('Validation.login') ?? [
+        return [
             'email' => [
                 'label' => 'Auth.email',
                 'rules' => config(AuthSession::class)->emailValidationRules,
+                'errors' => [
+                    'valid_email' => 'Email Tidak Valid',
+                    'required'    => 'Email Harus Diisi',
+                    'is_unique'   => 'Email Sudah Terdaftar',
+                    'max_length'  => 'Email Terlalu Panjang',
+                    'min_length'  => 'Email Terlalu Pendek',
+                ],
             ],
             'password' => [
                 'label'  => 'Auth.password',
                 'rules'  => 'required|' . Passwords::getMaxLenghtRule(),
                 'errors' => [
-                    'max_byte' => 'Auth.errorPasswordTooLongBytes',
+                    'required' => 'Password Harus Diisi',
+                    'max_length' => 'Password Terlalu Panjang',
+                    'min_length' => 'Password Terlalu Pendek',
                 ],
             ],
         ];

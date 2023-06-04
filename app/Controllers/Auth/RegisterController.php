@@ -9,10 +9,10 @@ use CodeIgniter\Shield\Authentication\Passwords;
 class RegisterController extends BaseController
 {
     public function jwtRegister(){
-        $username = $this->request->getVar('username');
-        $email = $this->request->getVar('email');
-        $password = $this->request->getVar('password');
-        $confirmPassword = $this->request->getVar('confirmPassword');
+        $username = $this->request->getPost('username');
+        $email = $this->request->getPost('email');
+        $password = $this->request->getPost('password');
+        $password_confirm = $this->request->getPost('password_confirm');
 
         $users = auth()->getProvider();
 
@@ -24,14 +24,15 @@ class RegisterController extends BaseController
 
         // Validate the user
         $rules = $this->getValidationRules();
-
-        if (! $this->validateData([
-            'username' => $username,
-            'email'    => $email,
-            'password' => $password,
-            'confirm_password' => $confirmPassword,
-        ], $rules)) {
-            return $this->response->setJSON(['errors' => $this->validator->getErrors()])
+        
+        try{
+            if (! $this->validateData($this->request->getPost(), $rules)) {
+                return $this->response->setJSON(['errors' => $this->validator->getErrors()])
+                    ->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
+            }
+        }
+        catch(\Exception $e){
+            return $this->response->setJSON(['errors' => "Something went wrong"])
                 ->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
         }
 
@@ -68,10 +69,41 @@ class RegisterController extends BaseController
     protected function getValidationRules(): array
     {
         return [
-            'username' => 'required|min_length[3]|max_length[255]|is_unique[users.username]',
-            'email'    => 'required|min_length[3]|max_length[255]|valid_email|is_unique[auth_identities.secret]',
-            'password' => 'required|min_length[8]|' . Passwords::getMaxLenghtRule() . '|strong_password',
-            'confirm_password' => 'required|matches[password]',
+            'username' => [
+                'rules' => 'required|min_length[3]|max_length[255]|is_unique[users.username]',
+                'errors' => [
+                    'is_unique' => 'Username Sudah Digunakan',
+                    'required' => 'Username Harus Diisi',
+                    'min_length' => 'Username Minimal 3 Karakter',
+                    'max_length' => 'Username Maksimal 255 Karakter',
+                ],
+            ],
+            'email'    => [
+                'rules' => 'required|min_length[3]|max_length[255]|valid_email|is_unique[auth_identities.secret]',
+                'errors' => [
+                    'is_unique' => 'Email Sudah Digunakan',
+                    'required' => 'Email Harus Diisi',
+                    'min_length' => 'Email Minimal 3 Karakter',
+                    'max_length' => 'Email Maksimal 255 Karakter',
+                    'valid_email' => 'Email Tidak Valid',
+                ],
+            ],
+            'password' => [
+                'rules' => 'required|min_length[8]|' . Passwords::getMaxLenghtRule() . '|strong_password',
+                'errors' => [
+                    'required' => 'Password Harus Diisi',
+                    'min_length' => 'Password Minimal 8 Karakter',
+                    'max_length' => 'Password Maksimal 255 Karakter',
+                    'strong_password' => 'Password Harus Mengandung Huruf Besar, Huruf Kecil, Angka, dan Simbol',
+                ],
+            ],
+            'password_confirm' => [
+                'rules' => 'required|matches[password]',
+                'errors' => [
+                    'required' => 'Konfirmasi Password Harus Diisi',
+                    'matches' => 'Konfirmasi Password Tidak Sama Dengan Password'
+                ]
+            ],
         ];
     }
 }

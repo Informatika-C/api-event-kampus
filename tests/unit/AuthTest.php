@@ -37,6 +37,37 @@ class AuthTest extends CIUnitTestCase
         $this->assertTrue($result->isOK());
     }
 
+    public function testLoginFailed(){
+        $result = $this->call('post', '/auth/login', [
+            'email' => 'user212@gmail.com',
+            'password' => 'orangbiasa'
+        ]);
+
+        $result->assertStatus(401);
+    }
+
+    public function testRegisterSuccsess(){
+        $result = $this->call('post', '/auth/register', [
+            'username' => 'user2',
+            'email' => 'user2@gmail.com',
+            'password' => 'orangbiasa',
+            'password_confirm' => 'orangbiasa'
+        ]);
+
+        $this->assertTrue($result->isOK());
+    }
+
+    public function testRegisterFailed(){
+        $result = $this->call('post', '/auth/register', [
+            'username' => 'user2@',
+            'email' => 'user',
+            'password' => 'orangbiasa',
+            'confirmPassword' => 'orangbiasa'
+        ]);
+
+        $result->assertStatus(401);
+    }
+
     private function createDummyUser(){
         $users = auth()->getProvider();
 
