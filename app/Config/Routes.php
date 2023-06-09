@@ -34,8 +34,62 @@ $routes->set404Override();
 
 $routes->get('test-server', '\App\Controllers\Home::index');
 
-$routes->post('auth/login', '\App\Controllers\Auth\LoginController::jwtLogin');
-$routes->post('auth/register', '\App\Controllers\Auth\RegisterController::jwtRegister');
+$routes->group('auth', ['namespace' => '\App\Controllers\Auth'] ,function ($routes) {
+    $routes->post('login', 'LoginController::jwtLogin');
+    $routes->post('register', 'RegisterController::jwtRegister');
+});
+
+$routes->group('event', ['namespace' => '\App\Controllers\Event'], function ($routes) {
+    $routes->get('/', 'EventController::index');
+    $routes->post('/', 'EventController::create');
+    $routes->put('/(:num)', 'EventController::update/$id');
+    $routes->delete('/(:num)', 'EventController::delete/$id');
+    $routes->get('/(:num)', 'EventController::find/$id');
+    $routes->get('/search', 'EventController::search');
+    $routes->get('/{:num}/panitia', 'EventController::panitia/$id');
+    $routes->get('/{:num}/peserta', 'EventController::peserta/$id');
+    $routes->get('/{:num}/mitra', 'EventController::mitra/$id');
+    $routes->get('/{:num}/sertifikat', 'EventController::sertifikat/$id');
+});
+
+$routes->group('peserta', ['namespace' => '\App\Controllers\Peserta'], function ($routes) {
+    $routes->get('/', 'PesertaController::index');
+    $routes->get('/(:num)', 'PesertaController::find/$id');
+    $routes->put('/(:num)', 'PesertaController::update/$id');
+    $routes->get('/search', 'PesertaController::search');
+    $routes->get('/{:num}/event', 'PesertaController::event/$id');
+    $routes->get('/{:num}/sertifikat', 'PesertaController::sertifikat/$id');
+});
+
+$routes->group('panitia', ['namespace' => '\App\Controllers\Panitia'], function ($routes) {
+    $routes->get('/', 'PanitiaController::index');
+    $routes->get('/(:num)', 'PanitiaController::find/$id');
+    $routes->put('/(:num)', 'PanitiaController::update/$id');
+    $routes->get('/search', 'PanitiaController::search');
+    $routes->get('/{:num}/event', 'PanitiaController::event/$id');
+});
+
+$routes->group('sertifikat', ['namespace' => '\App\Controllers\Sertifikat'], function ($routes) {
+    $routes->get('/', 'SertifikatController::index');
+    $routes->post('/', 'SertifikatController::create');
+    $routes->put('/(:num)', 'SertifikatController::update/$id');
+    $routes->delete('/(:num)', 'SertifikatController::delete/$id');
+    $routes->get('/(:num)', 'SertifikatController::find/$id');
+    $routes->get('/search', 'SertifikatController::search');
+    $routes->get('/{:num}/event', 'SertifikatController::event/$id');
+    $routes->get('/{:num}/peserta', 'SertifikatController::peserta/$id');
+});
+
+$routes->group('mitra', ['namespace' => '\App\Controllers\Mitra'], function ($routes) {
+    $routes->get('/', 'MitraController::index');
+    $routes->post('/', 'MitraController::create');
+    $routes->put('/(:num)', 'MitraController::update/$id');
+    $routes->delete('/(:num)', 'MitraController::delete/$id');
+    $routes->get('/(:num)', 'MitraController::find/$id');
+    $routes->get('/search', 'MitraController::search');
+    $routes->get('/{:num}/event', 'MitraController::event/$id');
+});
+
 
 /*
  * --------------------------------------------------------------------

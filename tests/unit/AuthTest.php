@@ -19,7 +19,7 @@ class AuthTest extends CIUnitTestCase
     protected $migrate     = true;
     protected $migrateOnce = false;
     protected $refresh     = true;
-    protected $namespace   = 'Tests\Support';
+    protected $namespace   = ['App','Tests\Support'];
 
     protected function setUp(): void
     {
