@@ -6,8 +6,6 @@ use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\DatabaseTestTrait;
 use CodeIgniter\Test\FeatureTestTrait;
 
-use function PHPSTORM_META\type;
-
 class EventTest extends CIUnitTestCase
 {
     use DatabaseTestTrait;
@@ -77,6 +75,27 @@ class EventTest extends CIUnitTestCase
         $this->seeInDatabase('event', ['nama' => 'Event 3']);
     }
 
+    public function testEventInsertFail()
+    {
+        $data = [
+            'nama' => 'Event 1'
+        ];
+
+        $result = $this->withBody(
+            json_encode($data),
+            'application/json'
+        )->call('post', 'event');
+
+        $result->assertStatus(400);
+        
+        $data = $result->response()->getJSON();
+        $array_data = json_decode($data);
+        $this->assertIsObject($array_data);
+
+        // Check message
+        $this->assertEquals($array_data->message, 'Data Tidak Valid');
+    }
+
     public function testEventUpdate()
     {
         $data = [
@@ -110,6 +129,21 @@ class EventTest extends CIUnitTestCase
         $this->assertEquals($array_data->gambar_banner, 'event-2-banner.jpg');
     }
 
+    public function testEventUpdateFail()
+    {
+        $result = $this->
+            call('put', 'event/1');
+
+        $result->assertStatus(400);
+        
+        $data = $result->response()->getJSON();
+        $array_data = json_decode($data);
+        $this->assertIsObject($array_data);
+
+        // Check message
+        $this->assertEquals($array_data->message, 'Data Tidak Valid');
+    }
+
     public function testEventDelete()
     {
         $result = $this->call('delete', 'event/2');
@@ -125,6 +159,20 @@ class EventTest extends CIUnitTestCase
 
         // Check if data is inserted to databases
         $this->dontSeeInDatabase('event', ['nama' => 'Event 2 Baru']);
+    }
+
+    public function testEventDeleteFail()
+    {
+        $result = $this->call('delete', 'event/100');
+
+        $result->assertStatus(404);
+        
+        $data = $result->response()->getJSON();
+        $array_data = json_decode($data);
+        $this->assertIsObject($array_data);
+
+        // Check message
+        $this->assertEquals($array_data->message, 'Data tidak ditemukan');
     }
 
     public function testEventFind()
@@ -146,6 +194,20 @@ class EventTest extends CIUnitTestCase
         $this->assertEquals($array_data->gambar_banner, 'event-1-banner.jpg');   
     }
 
+    public function testEventFindFail()
+    {
+        $result = $this->call('get', 'event/100');
+
+        $result->assertStatus(404);
+        
+        $data = $result->response()->getJSON();
+        $array_data = json_decode($data);
+        $this->assertIsObject($array_data);
+
+        // Check message
+        $this->assertEquals($array_data->message, 'Data tidak ditemukan');
+    }
+
     public function testEventSearch()
     {
         $result = $this->call('get', 'event/search?nama=Event 1');
@@ -163,5 +225,19 @@ class EventTest extends CIUnitTestCase
         $this->assertEquals($array_data[0]->penanggung_jawab, 'Penanggung jawab event 1');
         $this->assertEquals($array_data[0]->gambar_poster, 'event-1-poster.jpg');
         $this->assertEquals($array_data[0]->gambar_banner, 'event-1-banner.jpg');   
+    }
+
+    public function testEventSearchFail()
+    {
+        $result = $this->call('get', 'event/search');
+
+        $result->assertStatus(400);
+
+        $data = $result->response()->getJSON();
+        $array_data = json_decode($data);
+        $this->assertIsObject($array_data);
+
+        // Check message
+        $this->assertEquals($array_data->message, 'Query tidak sesuai');
     }
 }

@@ -19,10 +19,15 @@ class EventController extends BaseController
         $model = new EventModel();
         $data = $this->request->getJSON();
 
-        if ($model->insert($data)) {
-            return $this->response->setJSON($data)->setStatusCode(201);
-        } else {
-            return $this->response->setStatusCode(400);
+        try{
+            if ($model->insert($data)) {
+                return $this->response->setJSON($data)->setStatusCode(201);
+            } else {
+                return $this->response->setJSON(['message'=>'Data Tidak Valid'])->setStatusCode(400);
+            }
+        }
+        catch (\Exception $e) {
+            return $this->response->setJSON(['message'=>'Data Tidak Valid'])->setStatusCode(400);
         }
     }
 
@@ -32,10 +37,15 @@ class EventController extends BaseController
         $model = new EventModel();
         $data = $this->request->getJSON();
 
-        if ($model->update($id, $data)) {
-            return $this->response->setJSON($data)->setStatusCode(200);
-        } else {
-            return $this->response->setStatusCode(400);
+        try{
+            if ($model->update($id, $data)) {
+                return $this->response->setJSON($data)->setStatusCode(200);
+            } else {
+                return $this->response->setJSON(['message'=>'Data Tidak Valid'])->setStatusCode(400);
+            }
+        }
+        catch (\Exception $e) {
+            return $this->response->setJSON(['message'=>'Data Tidak Valid'])->setStatusCode(400);
         }
     }
 
@@ -43,11 +53,21 @@ class EventController extends BaseController
     {
         $id = $this->request->getUri()->getSegment(2);
         $model = new EventModel();
+
+        // check if id is exist
+        if($model->find($id) == null) {
+            return $this->response->setStatusCode(404)->setJSON(['message' => 'Data tidak ditemukan']);
+        }
         
-        if ($model->delete($id)) {
-            return $this->response->setStatusCode(200)->setJSON(['message' => 'Data berhasil dihapus']);
-        } else {
-            return $this->response->setStatusCode(400);
+        try{
+            if ($model->delete($id)) {
+                return $this->response->setStatusCode(200)->setJSON(['message' => 'Data berhasil dihapus']);
+            } else {
+                return $this->response->setStatusCode(404)->setJSON(['message' => 'Data tidak ditemukan']);
+            }
+        }
+        catch (\Exception $e) {
+            return $this->response->setStatusCode(404)->setJSON(['message' => 'Data tidak ditemukan']);
         }
     }
 
@@ -55,7 +75,12 @@ class EventController extends BaseController
     {
         $id = $this->request->getUri()->getSegment(2);
         $model = new EventModel();
+
         $data = $model->find($id);
+
+        if($data == null) {
+            return $this->response->setStatusCode(404)->setJSON(['message' => 'Data tidak ditemukan']);
+        }
 
         return $this->response->setJSON($data);
     }
