@@ -1,5 +1,6 @@
 <?php
 
+use App\Database\Seeds\EventSeeder;
 use CodeIgniter\Test\CIUnitTestCase;
 
 use CodeIgniter\Test\DatabaseTestTrait;
@@ -19,9 +20,7 @@ class EventTest extends CIUnitTestCase
     protected $namespace   = ['App','Tests\Support'];
 
     // For Seeds
-    protected $seedOnce = false;
-    protected $seed     = 'EventSeeder';
-    protected $basePath = 'App/Database';
+    protected $seed     = EventSeeder::class;
 
     public function testEventIndex()
     {
