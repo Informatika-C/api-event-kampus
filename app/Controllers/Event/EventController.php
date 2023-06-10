@@ -59,4 +59,46 @@ class EventController extends BaseController
 
         return $this->response->setJSON($data);
     }
+
+    public function search()
+    {
+        // get all query key
+        $query = $this->request->getGet();
+
+        // array to object
+        $query = (object) $query;
+
+        $model = new EventModel();
+
+        $queryData = $model;
+
+        if(!(array) $query) {
+            return $this->response->setStatusCode(400)->setJSON(['message' => 'Query tidak sesuai']);
+        }
+        foreach($query as $key => $value) {
+            if(!in_array($key, $model->allowedFields)) {
+                return $this->response->setStatusCode(400)->setJSON(['message' => 'Query tidak sesuai']);
+            }
+        }
+
+        if(isset($query->nama)) {
+            $queryData = $queryData->like('nama', $query->nama);
+        }
+        if(isset($query->keterangan)) {
+            $queryData = $queryData->orLike('keterangan', $query->keterangan);
+        }
+        if(isset($query->tanggal)) {
+            $queryData = $queryData->orLike('tanggal', $query->tanggal);
+        }
+        if(isset($query->tempat)) {
+            $queryData = $queryData->orLike('tempat', $query->tempat);
+        }
+        if(isset($query->penanggung_jawab)) {
+            $queryData = $queryData->orLike('penanggung_jawab', $query->penanggung_jawab);
+        }
+
+        $queryData = $queryData->findAll();
+
+        return $this->response->setJSON($queryData);
+    }
 }

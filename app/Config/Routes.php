@@ -45,6 +45,7 @@ $routes->group('event', ['namespace' => '\App\Controllers\Event'], function ($ro
     $routes->put('(:num)', 'EventController::update');
     $routes->delete('(:num)', 'EventController::delete');
     $routes->get('(:num)', 'EventController::find');
+    $routes->get('search', 'EventController::search');
     $routes->get('(:num)/panitia', 'EventController::panitia');
     $routes->get('(:num)/peserta', 'EventController::peserta');
     $routes->get('(:num)/mitra', 'EventController::mitra');

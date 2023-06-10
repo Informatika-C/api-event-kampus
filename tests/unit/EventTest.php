@@ -145,4 +145,23 @@ class EventTest extends CIUnitTestCase
         $this->assertEquals($array_data->gambar_poster, 'event-1-poster.jpg');
         $this->assertEquals($array_data->gambar_banner, 'event-1-banner.jpg');   
     }
+
+    public function testEventSearch()
+    {
+        $result = $this->call('get', 'event/search?nama=Event 1');
+
+        $this->assertTrue($result->isOK());
+        
+        $data = $result->response()->getJSON();
+        $array_data = json_decode($data);
+        $this->assertIsArray($array_data);
+
+        $this->assertEquals($array_data[0]->nama, 'Event 1');
+        $this->assertEquals($array_data[0]->keterangan, 'Keterangan event 1');
+        $this->assertEquals($array_data[0]->tanggal, '2021-01-01');
+        $this->assertEquals($array_data[0]->tempat, 'Tempat event 1');
+        $this->assertEquals($array_data[0]->penanggung_jawab, 'Penanggung jawab event 1');
+        $this->assertEquals($array_data[0]->gambar_poster, 'event-1-poster.jpg');
+        $this->assertEquals($array_data[0]->gambar_banner, 'event-1-banner.jpg');   
+    }
 }

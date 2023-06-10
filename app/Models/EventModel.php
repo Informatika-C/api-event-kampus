@@ -9,7 +9,7 @@ class EventModel extends Model
     protected $table            = 'event';
     protected $primaryKey       = 'id_event';
     protected $useAutoIncrement = true;
-    protected $allowedFields    = ['nama', 'keterangan', 'tanggal', 'tempat', 'penanggung_jawab', 'gambar_poster', 'gambar_banner'];
+    public $allowedFields    = ['nama', 'keterangan', 'tanggal', 'tempat', 'penanggung_jawab', 'gambar_poster', 'gambar_banner'];
 
     // Validation
     protected $validationRules      = [
