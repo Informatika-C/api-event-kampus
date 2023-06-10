@@ -21,7 +21,7 @@ class EventTest extends CIUnitTestCase
     // For Seeds
     protected $seedOnce = false;
     protected $seed     = 'EventSeeder';
-    protected $basePath = 'App\Database';
+    protected $basePath = 'App/Database';
 
     public function testEventIndex()
     {
