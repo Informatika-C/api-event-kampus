@@ -1,6 +1,7 @@
 <?php
 
 use App\Database\Seeds\EventSeeder;
+use CodeIgniter\Shield\Entities\User;
 use CodeIgniter\Test\CIUnitTestCase;
 
 use CodeIgniter\Test\DatabaseTestTrait;
@@ -20,9 +21,39 @@ class EventTest extends CIUnitTestCase
     // For Seeds
     protected $seed     = EventSeeder::class;
 
+    protected $jwt = null;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $users = auth()->getProvider();
+
+        $user = new User([
+            'username' => 'admin',
+            'email'    => 'admin@gmail.com',
+            'password' => 'katasandi',
+        ]);
+        $users->save($user);
+        $user = $users->findById($users->getInsertID());
+        $user->addGroup('admin');
+
+        /** @var JWTManager $manager */
+        $manager = service('jwtmanager');
+
+        $claims = [
+            'role' => $user->getGroups()[0],
+        ];
+
+        // Generate JWT
+        $this->jwt = $manager->generateToken($user, $claims);
+    }
+
     public function testEventIndex()
     {
-        $result = $this->call('get', 'event');
+        $result = $this
+        ->withHeaders(['Authorization' => 'Bearer ' . $this->jwt])
+        ->call('get', 'event');
 
         $this->assertTrue($result->isOK());
         
@@ -51,10 +82,13 @@ class EventTest extends CIUnitTestCase
             'gambar_banner' => 'event-5-banner.jpg'
         ];
 
-        $result = $this->withBody(
+        $result = $this
+        ->withHeaders(['Authorization' => 'Bearer ' . $this->jwt])
+        ->withBody(
             json_encode($data),
             'application/json'
-        )->call('post', 'event');
+        )
+        ->call('post', 'event');
 
         $this->assertTrue($result->isOK());
         $result->assertStatus(201);
@@ -81,7 +115,9 @@ class EventTest extends CIUnitTestCase
             'nama' => 'Event 1'
         ];
 
-        $result = $this->withBody(
+        $result = $this
+        ->withHeaders(['Authorization' => 'Bearer ' . $this->jwt])
+        ->withBody(
             json_encode($data),
             'application/json'
         )->call('post', 'event');
@@ -108,11 +144,13 @@ class EventTest extends CIUnitTestCase
             'gambar_banner' => 'event-2-banner.jpg'
         ];
 
-        $result = $this->
-            withBody(
+        $result = $this
+        ->withHeaders(['Authorization' => 'Bearer ' . $this->jwt])
+        ->withBody(
                 json_encode($data),
                 'application/json'
-            )->call('put', 'event/1');
+            )
+        ->call('put', 'event/1');
 
         $this->assertTrue($result->isOK());
         
@@ -131,8 +169,9 @@ class EventTest extends CIUnitTestCase
 
     public function testEventUpdateFail()
     {
-        $result = $this->
-            call('put', 'event/1');
+        $result = $this
+        ->withHeaders(['Authorization' => 'Bearer ' . $this->jwt])
+        ->call('put', 'event/1');
 
         $result->assertStatus(400);
         
@@ -146,7 +185,9 @@ class EventTest extends CIUnitTestCase
 
     public function testEventDelete()
     {
-        $result = $this->call('delete', 'event/2');
+        $result = $this
+        ->withHeaders(['Authorization' => 'Bearer ' . $this->jwt])
+        ->call('delete', 'event/2');
 
         $this->assertTrue($result->isOK());
         
@@ -163,7 +204,9 @@ class EventTest extends CIUnitTestCase
 
     public function testEventDeleteFail()
     {
-        $result = $this->call('delete', 'event/100');
+        $result = $this
+        ->withHeaders(['Authorization' => 'Bearer ' . $this->jwt])
+        ->call('delete', 'event/100');
 
         $result->assertStatus(404);
         
@@ -177,7 +220,9 @@ class EventTest extends CIUnitTestCase
 
     public function testEventFind()
     {
-        $result = $this->call('get', 'event/1');
+        $result = $this
+        ->withHeaders(['Authorization' => 'Bearer ' . $this->jwt])
+        ->call('get', 'event/1');
 
         $this->assertTrue($result->isOK());
         
@@ -196,7 +241,9 @@ class EventTest extends CIUnitTestCase
 
     public function testEventFindFail()
     {
-        $result = $this->call('get', 'event/100');
+        $result = $this
+        ->withHeaders(['Authorization' => 'Bearer ' . $this->jwt])
+        ->call('get', 'event/100');
 
         $result->assertStatus(404);
         
@@ -210,7 +257,9 @@ class EventTest extends CIUnitTestCase
 
     public function testEventSearch()
     {
-        $result = $this->call('get', 'event/search?nama=Event 1');
+        $result = $this
+        ->withHeaders(['Authorization' => 'Bearer ' . $this->jwt])
+        ->call('get', 'event/search?nama=Event 1');
 
         $this->assertTrue($result->isOK());
         
@@ -229,7 +278,9 @@ class EventTest extends CIUnitTestCase
 
     public function testEventSearchFail()
     {
-        $result = $this->call('get', 'event/search');
+        $result = $this
+        ->withHeaders(['Authorization' => 'Bearer ' . $this->jwt])
+        ->call('get', 'event/search');
 
         $result->assertStatus(400);
 

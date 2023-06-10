@@ -39,7 +39,7 @@ $routes->group('auth', ['namespace' => '\App\Controllers\Auth'] ,function ($rout
     $routes->post('register', 'RegisterController::jwtRegister');
 });
 
-$routes->group('event', ['namespace' => '\App\Controllers\Event'], function ($routes) {
+$routes->group('event', ['namespace' => '\App\Controllers\Event', 'filter' => 'jwt'], function ($routes) {
     $routes->get('/', 'EventController::index');
     $routes->post('/', 'EventController::create');
     $routes->put('(:num)', 'EventController::update');
