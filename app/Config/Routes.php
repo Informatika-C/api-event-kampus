@@ -46,10 +46,15 @@ $routes->group('event', ['namespace' => '\App\Controllers\Event', 'filter' => 'j
     $routes->delete('(:num)', 'EventController::delete');
     $routes->get('(:num)', 'EventController::find');
     $routes->get('search', 'EventController::search');
-    $routes->get('(:num)/panitia', 'EventController::panitia');
-    $routes->get('(:num)/peserta', 'EventController::peserta');
-    $routes->get('(:num)/mitra', 'EventController::mitra');
-    $routes->get('(:num)/sertifikat', 'EventController::sertifikat');
+});
+
+$routes->group('kategori', ['namespace' => '\App\Controllers\Kategori', 'filter' => 'jwt'], function ($routes) {
+    $routes->get('/', 'KategoriController::index');
+    $routes->post('/', 'KategoriController::insert');
+    $routes->put('(:num)', 'KategoriController::update');
+    $routes->delete('(:num)', 'KategoriController::delete');
+    $routes->get('(:num)', 'KategoriController::find');
+    $routes->get('search', 'KategoriController::search');
 });
 
 $routes->group('peserta', ['namespace' => '\App\Controllers\Peserta'], function ($routes) {
