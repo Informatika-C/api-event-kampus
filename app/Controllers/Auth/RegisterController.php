@@ -14,14 +14,6 @@ class RegisterController extends BaseController
         $password = $this->request->getPost('password');
         $password_confirm = $this->request->getPost('password_confirm');
 
-        $users = auth()->getProvider();
-
-        $user = new User([
-            'username' => $username,
-            'email'    => $email,
-            'password' => $password,
-        ]);
-
         // Validate the user
         $rules = $this->getValidationRules();
         
@@ -35,6 +27,14 @@ class RegisterController extends BaseController
             return $this->response->setJSON(['errors' => "Something went wrong"])
                 ->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
         }
+
+        $users = auth()->getProvider();
+
+        $user = new User([
+            'username' => $username,
+            'email'    => $email,
+            'password' => $password,
+        ]);
 
         if(! $users->save($user)){
             return $this->response->setJSON(['errors' => $users->errors()])
