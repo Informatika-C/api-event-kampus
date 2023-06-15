@@ -23,7 +23,7 @@ class CreateKategoriTable extends Migration
                 'unsigned' => true,
                 'null' => false,
             ],
-            'kategori' => [
+            'nama_kategori' => [
                 'type' => 'VARCHAR',
                 'constraint' => 255,
                 'null' => false,

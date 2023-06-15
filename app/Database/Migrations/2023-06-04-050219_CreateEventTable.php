@@ -16,7 +16,7 @@ class CreateEventTable extends Migration
                 'unsigned' => true,
                 'auto_increment' => true
             ],
-            'nama' => [
+            'nama_event' => [
                 'type' => 'VARCHAR',
                 'constraint' => 255
             ],
