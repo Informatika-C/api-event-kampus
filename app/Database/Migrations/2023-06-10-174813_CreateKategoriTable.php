@@ -10,7 +10,7 @@ class CreateKategoriTable extends Migration
     {
         // make kategori table
         $this->forge->addField([
-            'id' => [
+            'id_kategori' => [
                 'type' => 'INT',
                 'constraint' => 11,
                 'unsigned' => true,
@@ -62,7 +62,8 @@ class CreateKategoriTable extends Migration
             ],
         ]);
 
-        $this->forge->addKey('id', true);
+        $this->forge->addKey('id_kategori', true);
+        $this->forge->addForeignKey('id_event', 'event', 'id_event', 'CASCADE', 'CASCADE');
         $this->forge->createTable('kategori');
     }
 

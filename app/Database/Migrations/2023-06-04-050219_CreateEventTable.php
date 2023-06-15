@@ -12,6 +12,7 @@ class CreateEventTable extends Migration
         $this->forge->addField([
             'id_event' => [
                 'type' => 'INT',
+                'constraint' => 11,
                 'unsigned' => true,
                 'auto_increment' => true
             ],
