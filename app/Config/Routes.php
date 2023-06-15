@@ -37,6 +37,7 @@ $routes->get('test-server', '\App\Controllers\Home::index');
 $routes->group('auth', ['namespace' => '\App\Controllers\Auth'] ,function ($routes) {
     $routes->post('login', 'LoginController::jwtLogin');
     $routes->post('register', 'RegisterController::jwtRegister');
+    $routes->get('logout', 'LogoutController::index');
 });
 
 $routes->group('event', ['namespace' => '\App\Controllers\Event', 'filter' => 'jwt'], function ($routes) {

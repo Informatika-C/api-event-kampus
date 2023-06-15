@@ -70,6 +70,8 @@ class LoginController extends BaseController
         // Generate JWT and return to client
         $jwt = $manager->generateToken($user, $claims);
 
+        auth()->login($user);
+
         return $this->response->setJSON(['access_token' => $jwt]);
     }
 
