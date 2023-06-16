@@ -40,6 +40,13 @@ $routes->group('auth', ['namespace' => '\App\Controllers\Auth'] ,function ($rout
     $routes->get('logout', 'LogoutController::index');
 });
 
+$routes->group('user', ['namespace' => '\App\Controllers\User', 'filter' => 'jwt'], function ($routes) {
+    $routes->get('/', 'UserController::index');
+    $routes->put('/', 'UserController::update');
+    $routes->delete('/', 'UserController::delete');
+    $routes->get('search', 'UserController::search');
+});
+
 $routes->group('event', ['namespace' => '\App\Controllers\Event', 'filter' => 'jwt'], function ($routes) {
     $routes->get('/', 'EventController::index');
     $routes->post('/', 'EventController::create');
