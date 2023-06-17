@@ -3,15 +3,84 @@ namespace App\Controllers\Kategori;
 
 use App\Controllers\BaseController;
 use App\Models\KategoriModel;
+use App\Models\PesertaKategori as ModelsPesertaKategori;
 
 class KategoriController extends BaseController
 {
     public function index()
     {
+        $id = $this->request->getUri()->getSegment(2);
         $model = new KategoriModel();
-        $AllData = $model->findAll();
+        $modelPesertaKategori = new ModelsPesertaKategori();
+        $AllData = $model->where('id_event', $id)->findAll();
+        
+        // loop data to add number of peserta in each kategori
+        foreach($AllData as $key => $value) {
+            $AllData[$key]['jumlah_peserta'] = count($modelPesertaKategori->where('id_kategori', $value['id_kategori'])->findAll());
+        }
 
         return $this->response->setJSON($AllData);
+    }
+
+    public function daftarKategori(){
+
+        $id_kategori = $this->request->getUri()->getSegment(3);
+        $model = new ModelsPesertaKategori();
+
+        // check if kapasitas is full
+        $modelKategori = new KategoriModel();
+        $dataKategori = $modelKategori->find($id_kategori);
+        $jumlah_peserta = count($model->where('id_kategori', $id_kategori)->findAll());
+
+        if($jumlah_peserta >= $dataKategori['kapasitas']) {
+            return $this->response->setJSON(['message' => 'Kategori sudah penuh'])->setStatusCode(400);
+        }
+
+        // check if user already registered
+        $data = [
+            'id_kategori' => $id_kategori,
+            'id_user' => auth()->id(),
+        ];
+        if($model->where($data)->first() != null) {
+            return $this->response->setJSON(['message' => 'Anda sudah terdaftar di kategori ini'])->setStatusCode(400);
+        }
+
+        $data = [
+            'id_kategori' => $id_kategori,
+            'id_user' => auth()->id(),
+            'created_at' => date('Y-m-d H:i:s'),
+        ];
+        if($model->insert($data)){
+            return $this->response->setJSON(['message' => 'Berhasil Daftar Kategori']);
+        }
+        else{
+            return $this->response->setJSON(['message' => 'Gagal Daftar Kategori'])->setStatusCode(400);
+        }
+    }
+
+    public function deleteDaftarKategori(){
+            $id_kategori = $this->request->getUri()->getSegment(3);
+            $model = new ModelsPesertaKategori();
+
+            // check if data not exist
+            $data = [
+                'id_kategori' => $id_kategori,
+                'id_user' => auth()->id(),
+            ];
+            if($model->where($data)->first() == null) {
+                return $this->response->setJSON(['message' => 'Data tidak ditemukan'])->setStatusCode(400);
+            }
+    
+            $data = [
+                'id_kategori' => $id_kategori,
+                'id_user' => auth()->id(),
+            ];
+            if($model->where($data)->delete()){
+                return $this->response->setJSON(['message' => 'Berhasil Hapus Kategori' ]);
+            }
+            else{
+                return $this->response->setJSON(['message' => 'Gagal Hapus Kategori' ])->setStatusCode(400);
+            }
     }
 
     public function insert()

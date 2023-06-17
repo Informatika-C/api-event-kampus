@@ -19,6 +19,7 @@ class KategoriModel extends Model
         'jam_akhir_penyisihan',
         'pengumuman',
         'final',
+        'kapasitas'
     ];
 
     protected $validationRules = [
