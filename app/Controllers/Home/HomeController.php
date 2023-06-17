@@ -8,9 +8,12 @@ class HomeController extends BaseController
     public function index()
     {
         $banner = glob("images/banner/*.*");
+        $eventModel = new \App\Models\EventModel();
+        $event = $eventModel->findAll();
 
         return $this->response->setJSON([
-            "banner" => $banner
+            "banner" => $banner,
+            "event" => $event
         ]);
     }
 }

@@ -9,11 +9,11 @@ class EventModel extends Model
     protected $table            = 'event';
     protected $primaryKey       = 'id_event';
     protected $useAutoIncrement = true;
-    public $allowedFields    = ['nama', 'keterangan', 'tanggal', 'tempat', 'penanggung_jawab', 'gambar_poster', 'gambar_banner'];
+    public $allowedFields    = ['nama_event', 'tipe' ,'keterangan', 'tanggal', 'tempat', 'penanggung_jawab', 'gambar_poster', 'gambar_banner'];
 
     // Validation
     protected $validationRules      = [
-        'nama' => 'required|is_unique[event.nama]|min_length[3]|max_length[255]',
+        'nama_event' => 'required|is_unique[event.nama]|min_length[3]|max_length[255]',
         'keterangan' => 'required',
         'tanggal' => 'required|valid_date',
         'tempat' => 'required|min_length[3]|max_length[255]',
