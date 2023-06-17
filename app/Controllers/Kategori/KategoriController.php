@@ -19,6 +19,15 @@ class KategoriController extends BaseController
             $AllData[$key]['jumlah_peserta'] = count($modelPesertaKategori->where('id_kategori', $value['id_kategori'])->findAll());
         }
 
+        // loop data to check if user already registered
+        foreach($AllData as $key => $value) {
+            $data = [
+                'id_kategori' => $value['id_kategori'],
+                'id_user' => auth()->id(),
+            ];
+            $AllData[$key]['sudah_daftar'] = $modelPesertaKategori->where($data)->first() != null;
+        }
+
         return $this->response->setJSON($AllData);
     }
 
