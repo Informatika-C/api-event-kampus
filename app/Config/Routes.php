@@ -40,6 +40,8 @@ $routes->group('auth', ['namespace' => '\App\Controllers\Auth'] ,function ($rout
     $routes->get('logout', 'LogoutController::index');
 });
 
+$routes->get('home', '\App\Controllers\Home\HomeController::index');
+
 $routes->group('user', ['namespace' => '\App\Controllers\User', 'filter' => 'jwt'], function ($routes) {
     $routes->get('/', 'UserController::index');
     $routes->put('/', 'UserController::update');
