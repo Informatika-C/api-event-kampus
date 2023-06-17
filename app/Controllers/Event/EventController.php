@@ -8,10 +8,16 @@ class EventController extends BaseController
 {
     public function index()
     {
-        $model = new EventModel();
-        $AllData = $model->findAll();
+        $eventModel = new EventModel();
+        $event = $eventModel->findAll();
+        $event_academic = $eventModel->where("tipe", "akademik")->findAll();
+        $event_non_academic = $eventModel->where("tipe", "non-akademik")->findAll();
 
-        return $this->response->setJSON($AllData);
+        return $this->response->setJSON([
+            "event" => $event,
+            "event_academic" => $event_academic,
+            "event_non_academic" => $event_non_academic,
+        ]);
     }
 
     public function create()
