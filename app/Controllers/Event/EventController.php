@@ -23,7 +23,37 @@ class EventController extends BaseController
     public function create()
     {
         $model = new EventModel();
-        $data = $this->request->getJSON();
+        $data = [
+            'nama_event' => $this->request->getPost("nama_event"),
+            'tipe' => $this->request->getPost("tipe"),
+            'keterangan' => $this->request->getPost("keterangan"),
+            'tanggal' => $this->request->getPost("tanggal"),
+            'tempat' => $this->request->getPost("tempat"),
+            'penanggung_jawab' => $this->request->getPost("penanggung_jawab"),
+            'gambar_poster' => $this->request->getFile("gambar_poster"),
+            'gambar_banner' => $this->request->getFile("gambar_banner"),
+        ];
+        
+        foreach ($data as $key => $value) {
+            if ($key == 'gambar_poster' && $value != '-') {
+                if ($value->isValid()) {
+                    $poster = $value->getRandomName();
+                    $value->move(FCPATH . 'public/images/poster', $poster);
+                    $data['gambar_poster'] = 'images/poster/' . $poster;
+                } else {
+                    // Tangani kesalahan unggah gambar poster
+                }
+            } elseif ($key == 'gambar_banner' && $value != '-') {
+                if ($value->isValid()) {
+                    $banner = $value->getRandomName();
+                    $value->move(FCPATH . 'public/images/banner-event', $banner);
+                    $data['gambar_banner'] = 'images/banner-event/' . $banner;
+                } else {
+                    // Tangani kesalahan unggah gambar banner
+                }
+            }
+        }
+        
 
         try{
             if ($model->insert($data)) {
@@ -35,6 +65,7 @@ class EventController extends BaseController
         catch (\Exception $e) {
             return $this->response->setJSON(['message'=>'Data Tidak Valid'])->setStatusCode(400);
         }
+        
     }
 
     public function update()
