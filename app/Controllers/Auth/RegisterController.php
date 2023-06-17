@@ -13,6 +13,9 @@ class RegisterController extends BaseController
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
         $password_confirm = $this->request->getPost('password_confirm');
+        $nama = $this->request->getPost('nama');
+        $npm = $this->request->getPost('npm');
+        $no_hp = $this->request->getPost('no_hp');
 
         // Validate the user
         $rules = $this->getValidationRules();
@@ -34,6 +37,9 @@ class RegisterController extends BaseController
             'username' => $username,
             'email'    => $email,
             'password' => $password,
+            'nama' => $nama,
+            'npm' => $npm,
+            'no_hp' => $no_hp,
         ]);
 
         if(! $users->save($user)){
@@ -102,6 +108,26 @@ class RegisterController extends BaseController
                 'errors' => [
                     'required' => 'Konfirmasi Password Harus Diisi',
                     'matches' => 'Konfirmasi Password Tidak Sama Dengan Password'
+                ]
+            ],
+            'nama' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Nama Harus Diisi'
+                ]
+            ],
+            'npm' => [
+                'rules' => 'required|is_unique[users.npm]',
+                'errors' => [
+                    'required' => 'NPM Harus Diisi',
+                    'is_unique' => 'NPM Sudah Digunakan'
+                ]
+            ],
+            'no_hp' => [
+                'rules' => 'required|is_unique[users.no_hp]',
+                'errors' => [
+                    'required' => 'No HP Harus Diisi',
+                    'is_unique' => 'No HP Sudah Digunakan'
                 ]
             ],
         ];
