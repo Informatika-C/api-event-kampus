@@ -41,6 +41,9 @@ class UserController extends BaseController
                 'id_kategori' => $kategori['id_kategori'],
                 'nama_kategori' => $kategori['nama_kategori'],
                 'tanggal' => $value['created_at'],
+                'tanggal_pendaftaran' => $kategori['pendaftaran'],
+                'tanggal_penyisihan' => $kategori['penyisihan'],
+                'tanggal_final' => $kategori['final'],
             ];
         }
 
