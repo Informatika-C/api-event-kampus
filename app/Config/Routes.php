@@ -41,6 +41,7 @@ $routes->group('auth', ['namespace' => '\App\Controllers\Auth'] ,function ($rout
 });
 
 $routes->get('home', '\App\Controllers\Home\HomeController::index');
+$routes->get('peserta', '\App\Controllers\Peserta\PesertaController::index', ['filter' => 'jwt']);
 
 $routes->group('user', ['namespace' => '\App\Controllers\User', 'filter' => 'jwt'], function ($routes) {
     $routes->get('/', 'UserController::index');
