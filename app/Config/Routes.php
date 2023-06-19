@@ -48,6 +48,8 @@ $routes->group('user', ['namespace' => '\App\Controllers\User', 'filter' => 'jwt
     $routes->put('/', 'UserController::update');
     $routes->delete('/', 'UserController::delete');
     $routes->get('search', 'UserController::search');
+
+    $routes->get('history', 'UserController::history');
 });
 
 $routes->group('event', ['namespace' => '\App\Controllers\Event', 'filter' => 'jwt'], function ($routes) {

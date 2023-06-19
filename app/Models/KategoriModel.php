@@ -10,7 +10,7 @@ class KategoriModel extends Model
     protected $primaryKey = 'id_kategori';
     public $allowedFields = [
         'id_event',
-        'kategori',
+        'nama_kategori',
         'pendaftaran',
         'jam_awal_pendaftaran',
         'jam_akhir_pendaftaran',
