@@ -54,6 +54,8 @@ $routes->group('user', ['namespace' => '\App\Controllers\User', 'filter' => 'jwt
     $routes->post('update-email', 'UserController::updateEmail');
     $routes->post('update-npm', 'UserController::updateNPM');
     $routes->post('update-phone', 'UserController::updatePhone');
+
+    $routes->post('update-password', 'UserController::updatePassword');
 });
 
 $routes->group('event', ['namespace' => '\App\Controllers\Event', 'filter' => 'jwt'], function ($routes) {

@@ -5,6 +5,7 @@ use App\Controllers\BaseController;
 use App\Models\EventModel;
 use App\Models\KategoriModel;
 use App\Models\PesertaKategori;
+use CodeIgniter\Shield\Authentication\Passwords;
 use PDO;
 
 class UserController extends BaseController
@@ -208,6 +209,66 @@ class UserController extends BaseController
 
         return $this->response->setJSON([
             'message' => 'Berhasil mengubah nomor hp',
+        ]);
+    }
+
+    public function updatePassword(){
+        $password = $this->request->getPost('password');
+        $password_confirmation = $this->request->getPost('password_confirmation');
+
+        if($password != $password_confirmation){
+            return $this->response->setJSON([
+                'errors' => 'Password tidak sama',
+            ])->setStatusCode(400);
+        }
+
+        if(empty($password) && empty($password_confirmation)){
+            return $this->response->setJSON([
+                'errors' => 'Password tidak boleh kosong',
+            ])->setStatusCode(400);
+        }
+
+        $rules = [
+            'password' => [
+                'rules' => 'required|min_length[8]|' . Passwords::getMaxLenghtRule() . '|strong_password',
+                'errors' => [
+                    'required' => 'Password Harus Diisi',
+                    'min_length' => 'Password Minimal 8 Karakter',
+                    'max_length' => 'Password Maksimal 255 Karakter',
+                    'strong_password' => 'Password Harus Mengandung Huruf Besar, Huruf Kecil, Angka, dan Simbol',
+                ],
+            ],
+        ];
+
+        try{
+            if (! $this->validateData($this->request->getPost(), $rules)) {
+                return $this->response->setJSON(['errors' => $this->validator->getErrors()['password']])
+                    ->setStatusCode(400);
+            }
+        }
+        catch(\Exception $e){
+            return $this->response->setJSON(['errors' => "Something went wrong"])
+                ->setStatusCode(400);
+        }
+
+        $id_current_user = auth()->user()->id;
+        $users = auth()->getProvider();
+        $user = $users->findById($id_current_user);
+
+        $user->fill([
+            'password' => $password,
+        ]);
+
+        $users->save($user);
+
+        if(count($users->errors()) > 0){
+            return $this->response->setJSON([
+                'errors' => $users->errors(),
+            ])->setStatusCode(400);
+        }
+
+        return $this->response->setJSON([
+            'message' => 'Berhasil mengubah Password',
         ]);
     }
 
