@@ -109,6 +109,57 @@ class UserController extends BaseController
         ]);
     }
 
+    public function updateNPM(){
+        $npm = $this->request->getPost('npm');
+
+        if(empty($npm)){
+            return $this->response->setJSON([
+                'errors' => 'NPM tidak boleh kosong',
+            ])->setStatusCode(400);
+        }
+
+        $rules = [
+            'npm' => [
+                'rules' => 'required|is_unique[users.npm]',
+                'errors' => [
+                    'required' => 'NPM Harus Diisi',
+                    'is_unique' => 'NPM Sudah Digunakan'
+                ]
+            ]
+        ];
+
+        try{
+            if (! $this->validateData($this->request->getPost(), $rules)) {
+                return $this->response->setJSON(['errors' => $this->validator->getErrors()['npm']])
+                    ->setStatusCode(400);
+            }
+        }
+        catch(\Exception $e){
+            return $this->response->setJSON(['errors' => "Something went wrong"])
+                ->setStatusCode(400);
+        }
+
+        $id_current_user = auth()->user()->id;
+        $users = auth()->getProvider();
+        $user = $users->findById($id_current_user);
+
+        $user->fill([
+            'npm' => $npm,
+        ]);
+
+        $users->save($user);
+
+        if(count($users->errors()) > 0){
+            return $this->response->setJSON([
+                'errors' => $users->errors(),
+            ])->setStatusCode(400);
+        }
+
+        return $this->response->setJSON([
+            'message' => 'Berhasil mengubah npm',
+        ]);
+    }
+
     public function updatePhone(){
         $phone = $this->request->getPost('no_hp');
 
