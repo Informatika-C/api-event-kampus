@@ -33,6 +33,12 @@ class EventController extends BaseController
             'gambar_poster' => $this->request->getFile("gambar_poster"),
             'gambar_banner' => $this->request->getFile("gambar_banner"),
         ];
+
+        if($data['nama_event'] == null || $data['tipe'] == null || $data['keterangan'] == null || $data['tanggal'] == null || $data['tempat'] == null || $data['penanggung_jawab'] == null){
+            return $this->response->setJSON([
+                "errors" => "Bad Request"
+            ])->setStatusCode(400);
+        }
         
         foreach ($data as $key => $value) {
             if ($key == 'gambar_poster' && $value != '-') {
